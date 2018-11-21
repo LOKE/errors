@@ -1,34 +1,34 @@
 // see https://github.com/bjyoungblood/es6-error/blob/master/src/index.js
 
 class ExtendableError extends Error {
-  constructor(message = '') {
+  constructor(message = "") {
     super(message);
 
     // extending Error is weird and does not propagate `message`
-    Object.defineProperty(this, 'message', {
+    Object.defineProperty(this, "message", {
       configurable: true,
-      enumerable: false,
+      enumerable: true,
       value: message,
-      writable: true,
+      writable: true
     });
 
-    Object.defineProperty(this, 'name', {
+    Object.defineProperty(this, "name", {
       configurable: true,
       enumerable: false,
       value: this.constructor.name,
-      writable: true,
+      writable: true
     });
 
-    if (Error.hasOwnProperty('captureStackTrace')) {
+    if (Error.hasOwnProperty("captureStackTrace")) {
       Error.captureStackTrace(this, this.constructor);
       return;
     }
 
-    Object.defineProperty(this, 'stack', {
+    Object.defineProperty(this, "stack", {
       configurable: true,
       enumerable: false,
-      value: (new Error(message)).stack,
-      writable: true,
+      value: new Error(message).stack,
+      writable: true
     });
   }
 }

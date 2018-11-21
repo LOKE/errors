@@ -8,17 +8,33 @@ const counter = new client.Counter({
 
 class ErrorRegistry {
   constructor(args) {
-    const { name, typePrefix = "" } = args;
+    const { name, typePrefix = "", debug = false } = args;
     const registry = this;
     this.name = name;
     this.typePrefix = typePrefix;
+    this.debug = debug;
     this.registered = {};
 
     this.BaseError = class BaseError extends ExtendableError {
       constructor(message = "Error") {
         super(message);
 
-        this.code = typePrefix + this.constructor.code();
+        Object.defineProperty(this, "code", {
+          enumerable: false,
+          value: this.constructor.code
+        });
+
+        // Object.defineProperty(this, "type", {
+        //   enumerable: true,
+        //   value: this.constructor.type
+        // });
+        Object.defineProperty(this, "type", {
+          configurable: true,
+          enumerable: true,
+          value: this.constructor.type || "unkown",
+          writable: true
+        });
+
         if (!registry.registered[this.name]) {
           console.warn(
             `${
@@ -29,7 +45,45 @@ class ErrorRegistry {
         }
         counter.inc({ registry: name, type: this.constructor.name });
       }
+
+      // toJSON() {
+      //   return { message: this.message, type: this.type };
+      // }
+
+      static get type() {
+        return registry._typeFromCode(this.code);
+      }
     };
+  }
+
+  createErrorType({ name, code, help, constructor }) {
+    const registry = this;
+    const TypeError = class extends this.BaseError {
+      constructor(message = "") {
+        super(message);
+        if (constructor) constructor.apply(this, arguments);
+      }
+
+      // get type() {
+      //   return registry._typeFromCode(code);
+      // }
+
+      static get code() {
+        return code;
+      }
+
+      static get name() {
+        return name || `${code}Error`;
+      }
+
+      static get help() {
+        return help;
+      }
+    };
+
+    this.register(TypeError);
+
+    return TypeError;
   }
 
   register(ErrorType) {
@@ -41,13 +95,16 @@ class ErrorRegistry {
       throw new Error("Code required.");
     }
 
-    if (!ErrorType.description) {
-      throw new Error("Description required.");
+    if (!ErrorType.help) {
+      throw new Error("Help required.");
     }
 
     this.registered[ErrorType.name] = ErrorType;
+
+    if (!this.debug) return;
+
     console.log(
-      `Error type "${ErrorType.name}" registered with "${this.name}".`
+      `Error type "${ErrorType.name}" registered with registry "${this.name}".`
     );
   }
 
@@ -59,9 +116,9 @@ class ErrorRegistry {
   _mapTypeMeta(t) {
     return {
       name: t.name,
-      code: t.code(),
-      type: this._typeFromCode(t.code()),
-      description: t.description()
+      code: t.code,
+      type: t.type || this._typeFromCode(t.code),
+      help: t.help
     };
   }
 
