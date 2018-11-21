@@ -2,7 +2,7 @@
 
 Custom error types for Node.js that include additional metadata for purposes of documentation
 
-```
+```js
 const { ErrorRegistry } = require("@loke/meta-errors");
 
 const registry = new ErrorRegistry({
