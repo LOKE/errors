@@ -3,7 +3,8 @@ const { BaseError } = require("./types");
 const { ErrorRegistry } = require("./registry");
 
 exports.createErrorType = args => {
-  const useRegistry = args.registry || exports.registry;
+  const { name, code, help, namespace, typePrefix, registry: _registry } = args;
+  const registry = _registry || exports.registry;
 
   const TypedError = class extends BaseError {
     constructor(message = "Error", meta) {
@@ -16,7 +17,7 @@ exports.createErrorType = args => {
     }
 
     static get typePrefix() {
-      return typePrefix;
+      return typePrefix || registry.typePrefix;
     }
 
     static get code() {
@@ -32,7 +33,7 @@ exports.createErrorType = args => {
     }
   };
 
-  useRegistry(TypedError);
+  registry.register(TypedError);
 
   return TypedError;
 };
