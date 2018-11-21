@@ -67,34 +67,3 @@ class BaseError extends ExtendableError {
 
 exports.BaseError = BaseError;
 exports.ExtendableError = ExtendableError;
-
-exports.createErrorType = ({ name, code, help, namespace, typePrefix }) => {
-  const TypedError = class extends BaseError {
-    constructor(message = "Error", meta) {
-      super(message);
-      if (meta) Object.assign(this, meta);
-    }
-
-    static get namespace() {
-      return namespace;
-    }
-
-    static get typePrefix() {
-      return typePrefix;
-    }
-
-    static get code() {
-      return code;
-    }
-
-    static get name() {
-      return name || `${code}Error`;
-    }
-
-    static get help() {
-      return help;
-    }
-  };
-
-  return TypedError;
-};

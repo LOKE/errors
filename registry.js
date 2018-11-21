@@ -9,18 +9,6 @@ class ErrorRegistry {
     this.registered = {};
   }
 
-  createErrorType({ name, code, help, namespace, typePrefix }) {
-    const TypedError = createErrorType({
-      name,
-      code,
-      help,
-      namespace,
-      typePrefix: typePrefix || this.typePrefix
-    });
-    this.register(TypedError);
-    return TypedError;
-  }
-
   register(ErrorType) {
     if (!ErrorType.name) {
       throw new Error("Name required.");
