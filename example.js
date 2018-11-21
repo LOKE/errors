@@ -1,13 +1,23 @@
-const { registry, ErrorRegistry, createErrorType } = require("./index");
-const assert = require("assert");
+const {
+  registry,
+  ErrorRegistry,
+  BaseError,
+  createErrorType,
+  registerMetrics
+} = require("./index");
 registry.typePrefix = "https://abc.com/errors/";
+
+const { register } = require("prom-client");
+registerMetrics(register);
+
+const assert = require("assert");
 
 const altRegistry = new ErrorRegistry({
   name: "alt",
   typePrefix: "https://xyz.com/errors/"
 });
 
-class ErrorA extends registry.BaseError {
+class ErrorA extends BaseError {
   static get code() {
     return "error_a";
   }
@@ -22,20 +32,20 @@ registry.register(ErrorA);
 const ErrorB = createErrorType({
   name: "ErrorB",
   code: "error_b",
-  help: "Desc",
-  constructor: function Xyz() {
-    console.log("THROWING ERROR B");
-  }
+  help: "Desc"
 });
 
 const ErrorC = createErrorType({
-  name: "ErrorB",
-  code: "error_b",
+  name: "ErrorC",
+  code: "error_c",
   help: "Desc",
-  constructor: function Xyz(message, x) {
-    this.x = x;
-  },
   registry: altRegistry
+});
+
+const ErrorD = createErrorType({
+  code: "error_d",
+  namespace: "mynamespace",
+  help: "Desc"
 });
 
 new ErrorA();
@@ -44,7 +54,8 @@ const errb = new ErrorB("HELLO");
 /*
 THROWING ERROR B
 */
-const errc = new ErrorC("TEST", 123);
+const errc = new ErrorC("TEST", { x: 123 });
+const errd = new ErrorD();
 
 console.log(errb);
 /*
@@ -68,25 +79,20 @@ assert.strictEqual(
 
 assert.strictEqual(
   JSON.stringify(errc),
-  '{"message":"TEST","type":"https://xyz.com/errors/error_b","x":123}'
+  '{"message":"TEST","type":"https://xyz.com/errors/error_c","x":123}'
 );
 
-const client = require("prom-client");
+console.log(register.metrics());
 assert.strictEqual(
-  client.register.metrics(),
-  `# HELP errors_thrown Count of number times an error is thrown
-# TYPE errors_thrown counter
-errors_thrown{registry="default",type="ErrorA"} 2
-errors_thrown{registry="default",type="ErrorB"} 1
-errors_thrown{registry="alt",type="ErrorB"} 1
+  register.metrics(),
+  `# HELP errors_total Count of number times an error is thrown
+# TYPE errors_total counter
+errors_total{namespace="default",type="error_a"} 2
+errors_total{namespace="default",type="https://abc.com/errors/error_b"} 1
+errors_total{namespace="default",type="https://xyz.com/errors/error_c"} 1
+errors_total{namespace="mynamespace",type="https://abc.com/errors/error_d"} 1
 `
 );
-/*
-# HELP errors_thrown Count of number times an error is thrown
-# TYPE errors_thrown counter
-errors_thrown{registry="test1",type="ErrorA"} 2
-errors_thrown{registry="test1",type="ErrorB"} 1
-*/
 
 console.log(registry.getMeta());
 /*
