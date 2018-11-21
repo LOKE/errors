@@ -1,0 +1,22 @@
+{
+  "name": "meta-errors",
+  "version": "0.0.1",
+  "description": "Custom error types for Node.js that include additional metadata for purposes of documentation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LOKE/meta-errors.git"
+  },
+  "author": "LOKE",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LOKE/meta-errors/issues"
+  },
+  "homepage": "https://github.com/LOKE/meta-errors#readme",
+  "dependencies": {
+    "prom-client": "^11.2.0"
+  }
+}
