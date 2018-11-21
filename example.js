@@ -1,5 +1,5 @@
-const assert = require("assert");
 const { registry, ErrorRegistry, createErrorType } = require("./index");
+const assert = require("assert");
 registry.typePrefix = "https://abc.com/errors/";
 
 const altRegistry = new ErrorRegistry({
