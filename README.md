@@ -96,7 +96,7 @@ console.log(JSON.stringify(err1));
 // -> {"message":"This is a custom error","code":"custom_error","namespace":"group_a","type":"custom_error"}
 ```
 
-## Expose
+### Expose
 
 Expose is a flag to indicate the message is safe to expose to external users/clients.
 NOTE: this does not indicate that the message will be helpful to the context of the user.
