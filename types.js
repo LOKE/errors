@@ -40,11 +40,11 @@ class BaseError extends ExtendableError {
     super(message);
 
     Object.defineProperty(this, "code", {
-      enumerable: false,
+      enumerable: true,
       value: this.constructor.code
     });
     Object.defineProperty(this, "namespace", {
-      enumerable: false,
+      enumerable: true,
       value: this.constructor.namespace
     });
     Object.defineProperty(this, "type", {
@@ -61,7 +61,7 @@ class BaseError extends ExtendableError {
   }
 
   static get type() {
-    return (this.typePrefix || "") + this.code;
+    return (this.typePrefix || "") + this.code.toLowerCase();
   }
 }
 

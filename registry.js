@@ -1,5 +1,3 @@
-const { createErrorType } = require("./types");
-
 class ErrorRegistry {
   constructor(args) {
     const { name, typePrefix = "", debug = false } = args;
@@ -14,8 +12,8 @@ class ErrorRegistry {
       throw new Error("Name required.");
     }
 
-    if (!ErrorType.code) {
-      throw new Error("Code required.");
+    if (!ErrorType.code && !ErrorType.type) {
+      throw new Error("Code or type required.");
     }
 
     if (!ErrorType.help) {
@@ -39,6 +37,7 @@ class ErrorRegistry {
   _mapTypeMeta(t) {
     return {
       name: t.name,
+      namespace: t.namespace,
       code: t.code,
       type: t.type || this._typeFromCode(t.code),
       help: t.help
