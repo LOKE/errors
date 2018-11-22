@@ -100,7 +100,7 @@ console.log(JSON.stringify(err1));
 
 Errors created are automatically counted using [prom-client](https://github.com/siimon/prom-client).
 
-You will need to provide your registry if you wish these metrics to be usable.
+You will need to provide your register if you wish these metrics to be usable.
 
 ```js
 const { createErrorType, registerMetrics, registry } = require("./index");
