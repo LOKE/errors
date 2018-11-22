@@ -21,6 +21,13 @@ class ExtendableError extends Error {
       writable: true
     });
 
+    Object.defineProperty(this, "expose", {
+      configurable: true,
+      enumerable: true,
+      value: this.constructor.expose || undefined,
+      writable: true
+    });
+
     if (Error.hasOwnProperty("captureStackTrace")) {
       Error.captureStackTrace(this, this.constructor);
       return;

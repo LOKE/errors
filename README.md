@@ -52,7 +52,7 @@ If you want to change this convention you can supply a custom `type`, and `code`
 _NOTE: types are always lower case._
 
 ```js
-const { createErrorType, registry } = require("./index");
+const { createErrorType, registry } = require("@loke/errors");
 registry.typePrefix = "https://errors.example.com/";
 const MyCustomError = createErrorType({
   name: "MyCustomError",
@@ -82,7 +82,7 @@ console.log(err2.type); // -> https://stuff.com/errors/another_error
 Namespaces allow you to group errors together, eg by service, source, package, folder.
 
 ```js
-const { createErrorType } = require("./index");
+const { createErrorType } = require("@loke/errors");
 const MyCustomError = createErrorType({
   name: "MyCustomError",
   message: "This is a custom error",
@@ -96,6 +96,23 @@ console.log(JSON.stringify(err1));
 // -> {"message":"This is a custom error","code":"custom_error","namespace":"group_a","type":"custom_error"}
 ```
 
+## Expose
+
+Expose is a flag to indicate the message is safe to expose to external users/clients.
+NOTE: this does not indicate that the message will be helpful to the context of the user.
+
+```js
+const { createErrorType } = require("@loke/errors");
+const MyCustomError = createErrorType({
+  name: "MyCustomError",
+  code: "custom_error",
+  expose: true,
+  help: "help"
+});
+const err1 = new MyCustomError();
+console.log(err1.expose); // -> true
+```
+
 ## Metrics
 
 Errors created are automatically counted using [prom-client](https://github.com/siimon/prom-client).
@@ -103,7 +120,7 @@ Errors created are automatically counted using [prom-client](https://github.com/
 You will need to provide your register if you wish these metrics to be usable.
 
 ```js
-const { createErrorType, registerMetrics, registry } = require("./index");
+const { createErrorType, registerMetrics, registry } = require("@loke/errors");
 registry.typePrefix = "https://errors.example.com/";
 
 const { register } = require("prom-client");
@@ -131,7 +148,7 @@ console.log(register.metrics());
 Each error created is added to the error registry. You can fetch all registered types at any time for the purposes of live documentation.
 
 ```js
-const { createErrorType, registry } = require("./index");
+const { createErrorType, registry } = require("@loke/errors");
 registry.typePrefix = "https://abc.com/errors/";
 const MyCustomError = createErrorType({
   name: "MyCustomError",

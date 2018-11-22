@@ -10,6 +10,7 @@ exports.createErrorType = args => {
     help,
     namespace,
     typePrefix,
+    expose,
     registry: _registry,
     message: _message
   } = args;
@@ -45,6 +46,10 @@ exports.createErrorType = args => {
 
     static get help() {
       return help;
+    }
+
+    static get expose() {
+      return expose;
     }
   };
 
