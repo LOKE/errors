@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LOKE/meta-errors.git"
+    "url": "git+https://github.com/LOKE/errors.git"
   },
   "author": "LOKE",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/LOKE/meta-errors/issues"
+    "url": "https://github.com/LOKE/errors/issues"
   },
-  "homepage": "https://github.com/LOKE/meta-errors#readme",
+  "homepage": "https://github.com/LOKE/errors#readme",
   "dependencies": {
     "prom-client": "^11.2.0",
     "ulid": "^2.3.0"
