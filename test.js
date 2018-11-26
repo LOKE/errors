@@ -22,6 +22,18 @@ const NamespaceError = createErrorType({
   namespace: "mystuff"
 });
 
+function stack1() {
+  stack2();
+}
+
+function stack2() {
+  stackFinal();
+}
+
+function stackFinal() {
+  throw new ErrorA();
+}
+
 test("default message", t => {
   const err = new ErrorA();
   t.is(err.message, "This is error A");
@@ -50,4 +62,11 @@ test("expose", t => {
 test("namespace", t => {
   const err = new NamespaceError();
   t.is(err.namespace, "mystuff");
+});
+test("stack trace", t => {
+  const err = t.throws(() => stack1());
+  t.regex(
+    err.stack,
+    /ErrorA: This is error A\n    at stackFinal .+\n    at stackFinal .+\n    at stack2 .+\n    at stack1 .+\n    at coreAssert.throws/
+  );
 });
