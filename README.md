@@ -2,6 +2,8 @@
 
 Custom error types for Node.js that include additional metadata for purposes of documentation and metrics
 
+> NOTE: this readme does not reflect the inclusion of the error instance identifier. TBD.
+
 ## How To Use
 
 ### Basic Use
