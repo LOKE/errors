@@ -2,8 +2,6 @@
 
 Custom error types for Node.js that include additional metadata for purposes of documentation and metrics
 
-> NOTE: this readme does not reflect the inclusion of the error instance identifier. TBD.
-
 ## How To Use
 
 ### Basic Use
@@ -27,11 +25,12 @@ Presentation of the error is up to you, so you might like to use
 
 // Just throw to use default message
 throw new MyCustomError();
-// -> MyCustomError: This is a custom error
+// -> MyCustomError: This is a custom error [01CX7CJC5T4S642MH6MJ2WES0B]
+// NOTE: unique instance ID is printed at the end of the error
 
 // Or provide a custom message
 throw new MyCustomError("So custom right now");
-// -> MyCustomError: So custom right now
+// -> MyCustomError: So custom right now [01CX7CJC5T4S642MH6MJ2WES0B]
 
 // You can provide additional fields as the second arg
 const err1 = new MyCustomError("Extra fields", { x: 1, y: "two" });
@@ -40,7 +39,7 @@ console.log(err1.y); // -> two
 
 // Message, code, type and any extra fields are included in the JSON
 console.log(JSON.stringify(err1));
-// -> {"message":"Extra fields","code":"custom_error","type":"custom_error","x":1,"y":"two"}
+// -> {"instance","01CX7CJC5T4S642MH6MJ2WES0B","message":"Extra fields","code":"custom_error","type":"custom_error","x":1,"y":"two"}
 ```
 
 ### Types
@@ -95,7 +94,7 @@ const MyCustomError = createErrorType({
 const err1 = new MyCustomError();
 console.log(err1.namespace); // -> group_a
 console.log(JSON.stringify(err1));
-// -> {"message":"This is a custom error","code":"custom_error","namespace":"group_a","type":"custom_error"}
+// -> {"instance":"01CX7CJC5T4S642MH6MJ2WES0B","message":"This is a custom error","code":"custom_error","namespace":"group_a","type":"custom_error"}
 ```
 
 ### Expose
@@ -113,6 +112,22 @@ const MyCustomError = createErrorType({
 });
 const err1 = new MyCustomError();
 console.log(err1.expose); // -> true
+```
+
+### Stack Traces
+
+Stack traces are on by default. You can create error types without stack traces. These errors do _not_ extend from `Error` so `instanceof Error` will not work.
+
+```js
+const { createErrorType } = require("@loke/errors");
+const NoStack = createErrorType({
+  name: "NoStack",
+  code: "stack_free",
+  stackTrace: false,
+  help: "help"
+});
+const err1 = new NoStack("Message");
+console.log(err1.stack); // -> NoStack: Message [01CX7CJC5T4S642MH6MJ2WES0B]
 ```
 
 ## Metrics
