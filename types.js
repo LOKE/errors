@@ -1,6 +1,7 @@
 // see https://github.com/bjyoungblood/es6-error/blob/master/src/index.js
 
 const { counter } = require("./metrics");
+const { ulid } = require("ulid");
 
 class ExtendableError extends Error {
   constructor(message = "") {
@@ -11,20 +12,6 @@ class ExtendableError extends Error {
       configurable: true,
       enumerable: true,
       value: message,
-      writable: true
-    });
-
-    Object.defineProperty(this, "name", {
-      configurable: true,
-      enumerable: false,
-      value: this.constructor.name,
-      writable: true
-    });
-
-    Object.defineProperty(this, "expose", {
-      configurable: true,
-      enumerable: true,
-      value: this.constructor.expose || undefined,
       writable: true
     });
 
@@ -46,14 +33,32 @@ class BaseError extends ExtendableError {
   constructor(message = "Error") {
     super(message);
 
+    this.instance = ulid();
+
+    Object.defineProperty(this, "name", {
+      configurable: true,
+      enumerable: false,
+      value: this.constructor.name,
+      writable: true
+    });
+
+    Object.defineProperty(this, "expose", {
+      configurable: true,
+      enumerable: true,
+      value: this.constructor.expose || undefined,
+      writable: true
+    });
+
     Object.defineProperty(this, "code", {
       enumerable: true,
       value: this.constructor.code
     });
+
     Object.defineProperty(this, "namespace", {
       enumerable: true,
       value: this.constructor.namespace
     });
+
     Object.defineProperty(this, "type", {
       configurable: true,
       enumerable: true,

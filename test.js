@@ -30,6 +30,11 @@ test("custom message", t => {
   const err = new ErrorA("Custom message");
   t.is(err.message, "Custom message");
 });
+test("instance ID on each message", t => {
+  const err = new ErrorA();
+  t.is(typeof err.instance, "string");
+  t.is(err.instance.length, 26);
+});
 test("type", t => {
   const err = new ErrorA();
   t.is(err.type, "https://example.com/errors/error_a");

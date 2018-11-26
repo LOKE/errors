@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "8"
+  - lts/*
+# deploy:
+#   provider: npm
+#   email: npm@loke.com.au
+#   on:
+#     tags: true
+#     repo: LOKE/errors
