@@ -2,9 +2,11 @@ language: node_js
 node_js:
   - "8"
   - lts/*
-# deploy:
-#   provider: npm
-#   email: npm@loke.com.au
-#   on:
-#     tags: true
-#     repo: LOKE/errors
+deploy:
+  provider: npm
+  email: npm@loke.com.au
+  on:
+    tags: true
+    repo: LOKE/errors
+  api_key:
+    secure: iV1R8XxIBI07MGAvjB6fzXR5Qo6ybNdbi7EosKyWYfi/xHjb0Q++/CTB1BYaCUHCh2dlvg9bCtHOFYmg7QBJcR7Fljh/iaLjIzmh9z1SyIhQH9COQtagRQQbwBM8ImzJsTRYWunZAe2abHg8H2T6k/qqiILv9P8cXu8Gl0DaXl/NIcBRnkGeyidEu6w3ISt1gjqOdoXIY4YJHkYdQO/43KQJWZ+6jZU2SyrUD6DX9ARwgKejMhsS/EbDdwRETkFXIZ3Et0yYz17Tqjg3mXnjYMMRgfaPtdDYjUf8s4bZnbPnd0+XlGDGNN+LEQfwKJMzegHqByM6lkzlSTbw1CjctnKdNBKDi/j5W8NLNDOtdVMMN8JgI5bu9x2q8Qef7kc4J9uD0UKtYTr9PBIjN1v2HwD+ehBBUwtPhA00HNMuP2qp6D7u+iqE0lXY3FTwwjsmqh/5EhIHR6762JPFm63dPKHtOJAjY+kfUZJVyfESNHiY7wJOprtux2ncG91nmZoXlzersjV5mcBNCay/0lAEqpWrF8EgnhbLNHrPJFiL3FI07pLhMhPUJG2IVQqUP+wTDKZJJA5VPtXCKRjPGtG4UssT/GlaKAjj+QKQ1L6tuhbn3v7lZoPcAvaoz4L3AHNhTzctowN3SM1kKGF6TQFZmwYTWN2ScxIn7wIVRqDN5aI=
