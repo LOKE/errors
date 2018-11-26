@@ -1,5 +1,5 @@
 const { registerMetrics } = require("./metrics");
-const { BaseError } = require("./types");
+const { BaseError, SimpleError } = require("./types");
 const { ErrorRegistry } = require("./registry");
 
 exports.createErrorType = args => {
@@ -12,46 +12,86 @@ exports.createErrorType = args => {
     typePrefix,
     expose,
     registry: _registry,
-    message: _message
+    message: _message,
+    stackTrace = true
   } = args;
 
   const registry = _registry || exports.registry;
   const defaultMessage = _message || "Error";
 
-  const TypedError = class extends BaseError {
-    constructor(message, meta) {
-      super(message || defaultMessage);
-      if (meta) Object.assign(this, meta);
-    }
+  let TypedError;
 
-    static get namespace() {
-      return namespace;
-    }
+  if (stackTrace) {
+    TypedError = class extends BaseError {
+      constructor(message, meta) {
+        super(message || defaultMessage, stackTrace);
+        if (meta) Object.assign(this, meta);
+      }
 
-    static get typePrefix() {
-      return typePrefix || registry.typePrefix;
-    }
+      static get namespace() {
+        return namespace;
+      }
 
-    static get code() {
-      return code;
-    }
+      static get typePrefix() {
+        return typePrefix || registry.typePrefix;
+      }
 
-    static get type() {
-      return type || (this.typePrefix || "") + this.code.toLowerCase();
-    }
+      static get code() {
+        return code;
+      }
 
-    static get name() {
-      return name || `${code}Error`;
-    }
+      static get type() {
+        return type || (this.typePrefix || "") + this.code.toLowerCase();
+      }
 
-    static get help() {
-      return help;
-    }
+      static get name() {
+        return name || `${code}Error`;
+      }
 
-    static get expose() {
-      return expose;
-    }
-  };
+      static get help() {
+        return help;
+      }
+
+      static get expose() {
+        return expose;
+      }
+    };
+  } else {
+    TypedError = class extends SimpleError {
+      constructor(message, meta) {
+        super(message || defaultMessage, stackTrace);
+        if (meta) Object.assign(this, meta);
+      }
+
+      static get namespace() {
+        return namespace;
+      }
+
+      static get typePrefix() {
+        return typePrefix || registry.typePrefix;
+      }
+
+      static get code() {
+        return code;
+      }
+
+      static get type() {
+        return type || (this.typePrefix || "") + this.code.toLowerCase();
+      }
+
+      static get name() {
+        return name || `${code}Error`;
+      }
+
+      static get help() {
+        return help;
+      }
+
+      static get expose() {
+        return expose;
+      }
+    };
+  }
 
   registry.register(TypedError);
 

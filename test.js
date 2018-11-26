@@ -1,4 +1,5 @@
 import test from "ava";
+import { inspect } from "util";
 
 const { createErrorType, registry } = require("./index");
 registry.typePrefix = "https://example.com/errors/";
@@ -20,6 +21,12 @@ const NamespaceError = createErrorType({
   code: "namespaced",
   help: "Exposed help",
   namespace: "mystuff"
+});
+const StackFreeError = createErrorType({
+  name: "StackFreeError",
+  code: "stack_free",
+  help: "No stack trace here",
+  stackTrace: false
 });
 
 function stack1() {
@@ -47,6 +54,16 @@ test("instance ID on each message", t => {
   t.is(typeof err.instance, "string");
   t.is(err.instance.length, 26);
 });
+test("toString includes instance", t => {
+  const err = new ErrorA("Custom message.");
+  t.is(err.toString(), `ErrorA: Custom message. [${err.instance}]`);
+});
+test("util.inspect includes instance", t => {
+  const err = new ErrorA("Custom message.");
+  t.true(
+    inspect(err).startsWith(`{ ErrorA: Custom message. [${err.instance}]\n`)
+  );
+});
 test("type", t => {
   const err = new ErrorA();
   t.is(err.type, "https://example.com/errors/error_a");
@@ -67,6 +84,12 @@ test("stack trace", t => {
   const err = t.throws(() => stack1());
   t.regex(
     err.stack,
-    /ErrorA: This is error A\n    at stackFinal .+\n    at stackFinal .+\n    at stack2 .+\n    at stack1 .+\n    at coreAssert.throws/
+    /ErrorA: This is error A \[\w+\]\n    at stackFinal .+\n    at stackFinal .+\n    at stack2 .+\n    at stack1 .+\n    at coreAssert.throws/
   );
+});
+test("stack trace free", t => {
+  const err = t.throws(() => {
+    throw new StackFreeError("My message.");
+  });
+  t.is(err.stack, `StackFreeError: My message. [${err.instance}]`);
 });

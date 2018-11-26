@@ -29,46 +29,37 @@ class ExtendableError extends Error {
   }
 }
 
+/**
+ * A BaseError has a stack trace and extends the standard Error type.
+ */
 class BaseError extends ExtendableError {
   constructor(message = "Error") {
     super(message);
+    extendInstance(this);
+  }
 
-    this.instance = ulid();
+  toString() {
+    return `${this.name}: ${this.message} [${this.instance}]`;
+  }
 
-    Object.defineProperty(this, "name", {
+  static get type() {
+    return (this.typePrefix || "") + this.code.toLowerCase();
+  }
+}
+
+/**
+ * A SimpleError has no stack trace and does not extend the standard Error type.
+ */
+class SimpleError {
+  constructor(message = "Error") {
+    this.message = message;
+    extendInstance(this);
+
+    Object.defineProperty(this, "stack", {
       configurable: true,
       enumerable: false,
-      value: this.constructor.name,
+      value: this.toString(),
       writable: true
-    });
-
-    Object.defineProperty(this, "expose", {
-      configurable: true,
-      enumerable: true,
-      value: this.constructor.expose || undefined,
-      writable: true
-    });
-
-    Object.defineProperty(this, "code", {
-      enumerable: true,
-      value: this.constructor.code
-    });
-
-    Object.defineProperty(this, "namespace", {
-      enumerable: true,
-      value: this.constructor.namespace
-    });
-
-    Object.defineProperty(this, "type", {
-      configurable: true,
-      enumerable: true,
-      value: this.constructor.type || "unknown",
-      writable: true
-    });
-
-    counter.inc({
-      namespace: this.namespace || "default",
-      type: this.type
     });
   }
 
@@ -77,5 +68,47 @@ class BaseError extends ExtendableError {
   }
 }
 
+SimpleError.prototype.toString = BaseError.prototype.toString;
+
+function extendInstance(instance) {
+  instance.instance = ulid();
+
+  Object.defineProperty(instance, "name", {
+    configurable: true,
+    enumerable: false,
+    value: instance.constructor.name,
+    writable: true
+  });
+
+  Object.defineProperty(instance, "expose", {
+    configurable: true,
+    enumerable: true,
+    value: instance.constructor.expose || undefined,
+    writable: true
+  });
+
+  Object.defineProperty(instance, "code", {
+    enumerable: true,
+    value: instance.constructor.code
+  });
+
+  Object.defineProperty(instance, "namespace", {
+    enumerable: true,
+    value: instance.constructor.namespace
+  });
+
+  Object.defineProperty(instance, "type", {
+    configurable: true,
+    enumerable: true,
+    value: instance.constructor.type || "unknown",
+    writable: true
+  });
+
+  counter.inc({
+    namespace: instance.namespace || "default",
+    type: instance.type
+  });
+}
+
 exports.BaseError = BaseError;
-exports.ExtendableError = ExtendableError;
+exports.SimpleError = SimpleError;
