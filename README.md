@@ -130,6 +130,8 @@ const err1 = new NoStack("Message");
 console.log(err1.stack); // -> NoStack: Message [01CX7CJC5T4S642MH6MJ2WES0B]
 ```
 
+> NOTE: to get stack traces on async functions try include [https://github.com/AndreasMadsen/trace](trace) and [https://github.com/AndreasMadsen/clarify](clarify). This has a big performance hit, so only run in development.
+
 ## Metrics
 
 Errors created are automatically counted using [prom-client](https://github.com/siimon/prom-client).
