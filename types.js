@@ -3,6 +3,12 @@
 const { counter } = require("./metrics");
 const { ulid } = require("ulid");
 
+function toType(typePrefix, namespace, code) {
+  return (
+    (typePrefix || "") + (namespace ? namespace + "/" : "") + code.toLowerCase()
+  );
+}
+
 class ExtendableError extends Error {
   constructor(message = "") {
     super(message);
@@ -43,7 +49,7 @@ class BaseError extends ExtendableError {
   }
 
   static get type() {
-    return (this.typePrefix || "") + this.code.toLowerCase();
+    return toType(this.typePrefix, this.namespace, this.code);
   }
 }
 
@@ -64,7 +70,7 @@ class SimpleError {
   }
 
   static get type() {
-    return (this.typePrefix || "") + this.code.toLowerCase();
+    return toType(this.typePrefix, this.namespace, this.code);
   }
 }
 
@@ -112,3 +118,4 @@ function extendInstance(instance) {
 
 exports.BaseError = BaseError;
 exports.SimpleError = SimpleError;
+exports.toType = toType;

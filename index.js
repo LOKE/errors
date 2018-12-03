@@ -1,5 +1,5 @@
 const { registerMetrics } = require("./metrics");
-const { BaseError, SimpleError } = require("./types");
+const { BaseError, SimpleError, toType } = require("./types");
 const { ErrorRegistry } = require("./registry");
 
 exports.createErrorType = args => {
@@ -41,7 +41,7 @@ exports.createErrorType = args => {
       }
 
       static get type() {
-        return type || (this.typePrefix || "") + this.code.toLowerCase();
+        return type || toType(this.typePrefix, this.namespace, this.code);
       }
 
       static get name() {
@@ -76,7 +76,7 @@ exports.createErrorType = args => {
       }
 
       static get type() {
-        return type || (this.typePrefix || "") + this.code.toLowerCase();
+        return type || toType(this.typePrefix, this.namespace, this.code);
       }
 
       static get name() {

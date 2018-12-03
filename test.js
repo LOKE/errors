@@ -67,6 +67,12 @@ test("util.inspect includes instance", t => {
 test("type", t => {
   const err = new ErrorA();
   t.is(err.type, "https://example.com/errors/error_a");
+  t.is(
+    JSON.stringify(err),
+    `{"message":"This is error A","instance":"${
+      err.instance
+    }","code":"error_a","type":"https://example.com/errors/error_a"}`
+  );
 });
 test("code", t => {
   const err = new ErrorA();
@@ -78,7 +84,29 @@ test("expose", t => {
 });
 test("namespace", t => {
   const err = new NamespaceError();
-  t.is(err.namespace, "mystuff");
+  t.is(err.namespace, "mystuff", "Namespace should be exposed");
+  t.is(
+    err.type,
+    "https://example.com/errors/mystuff/namespaced",
+    "Namespace should be included in the type"
+  );
+  t.is(
+    JSON.stringify(err),
+    `{"message":"Error","instance":"${
+      err.instance
+    }","code":"namespaced","namespace":"mystuff","type":"https://example.com/errors/mystuff/namespaced"}`
+  );
+});
+test("meta", t => {
+  const err = new ErrorA("With meta", { a: 1, b: "two" });
+  t.is(err.a, 1);
+  t.is(err.b, "two");
+  t.is(
+    JSON.stringify(err),
+    `{"message":"With meta","instance":"${
+      err.instance
+    }","code":"error_a","type":"https://example.com/errors/error_a","a":1,"b":"two"}`
+  );
 });
 test("stack trace", t => {
   const err = t.throws(() => stack1());
