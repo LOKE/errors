@@ -101,6 +101,7 @@ test("meta", t => {
   const err = new ErrorA("With meta", { a: 1, b: "two" });
   t.is(err.a, 1);
   t.is(err.b, "two");
+  t.is(err.toString(), `ErrorA: With meta [${err.instance}] a=1, b=two`);
   t.is(
     JSON.stringify(err),
     `{"message":"With meta","instance":"${

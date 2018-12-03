@@ -46,7 +46,24 @@ class BaseError extends ExtendableError {
   }
 
   toString() {
-    return `${this.name}: ${this.message} [${this.instance}]`;
+    const meta = Object.keys(this)
+      .filter(key => {
+        switch (key) {
+          case "type":
+          case "code":
+          case "expose":
+          case "message":
+          case "namespace":
+          case "instance":
+            return false;
+          default:
+            return true;
+        }
+      })
+      .map(key => key + "=" + this[key])
+      .join(", ");
+    return `${this.name}: ${this.message} [${this.instance}]${meta &&
+      " " + meta}`;
   }
 
   static get type() {
