@@ -94,7 +94,7 @@ const MyCustomError = createErrorType({
 const err1 = new MyCustomError();
 console.log(err1.namespace); // -> group_a
 console.log(JSON.stringify(err1));
-// -> {"instance":"01CX7CJC5T4S642MH6MJ2WES0B","message":"This is a custom error","code":"custom_error","namespace":"group_a","type":"custom_error"}
+// -> {"instance":"01CX7CJC5T4S642MH6MJ2WES0B","message":"This is a custom error","code":"custom_error","namespace":"group_a","type":"group_a/custom_error"}
 ```
 
 ### Expose
@@ -112,6 +112,26 @@ const MyCustomError = createErrorType({
 });
 const err1 = new MyCustomError();
 console.log(err1.expose); // -> true
+```
+
+### Metadata
+
+Additional metadata fields can be exposed by using the second parameter.
+These will also be exposed when serializing and using toString().
+
+```js
+const { createErrorType } = require("@loke/errors");
+const MetaError = createErrorType({
+  name: "MetaError",
+  code: "meta_error",
+  expose: true,
+  help: "Don't forget to pass the second arg!"
+});
+const err1 = new MetaError("Something went wrong", { a: 1, b: "two" });
+console.log(err1.message); // -> Something went wrong
+console.log(err1.a); // -> 1
+console.log(err1.b); // -> two
+console.log(err.toString()); // -> MetaError: Something went wrong [01CX7CJC5T4S642MH6MJ2WES0B] a=1, b=two;
 ```
 
 ### Stack Traces
@@ -159,7 +179,7 @@ new MyCustomError();
 console.log(register.metrics());
 // # HELP errors_total Count of number times an error is thrown
 // # TYPE errors_total counter
-// errors_total{namespace="group_a",type="https://errors.example.com/custom_error"} 2
+// errors_total{namespace="group_a",type="https://errors.example.com/namespace/custom_error"} 2
 ```
 
 ## Documentation
@@ -194,7 +214,7 @@ console.log(registry.getMeta());
 // [ { name: 'MyCustomError',
 //     namespace: 'group_a',
 //     code: 'custom_error',
-//     type: 'https://abc.com/errors/custom_error',
+//     type: 'https://abc.com/errors/group_a/custom_error',
 //     help:
 //      'Put your long description text here.\nThis serves as documentation for this error type.\nInclude examples on how to use this error type heretoo.\n\nPresentation of the error is up to you, so you might like to use\n**Markdown** here too if the intent is to display in the browser.\n' },
 //   { name: 'AnotherError',
