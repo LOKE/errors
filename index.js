@@ -41,7 +41,7 @@ exports.createErrorType = args => {
       }
 
       static get type() {
-        return type || toType(this.typePrefix, this.namespace, this.code);
+        return type || toType(this);
       }
 
       static get name() {
