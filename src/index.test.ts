@@ -47,10 +47,6 @@ function stackFinal() {
   throw new ErrorA();
 }
 
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties
-console.log(String(new ErrorA("hi", { a: 1, b: "s" })));
-console.log(JSON.stringify(new ErrorA("hi", { a: 1, b: "s" })));
-
 test("default message", (t) => {
   const err = new ErrorA();
   t.is(err.message, "This is error A");
