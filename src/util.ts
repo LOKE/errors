@@ -1,4 +1,4 @@
-import logfmt from "logfmt";
+import { format } from "util";
 import { LokeError } from "./types";
 
 const EXCLUDED_META_KEYS = [
@@ -11,12 +11,7 @@ const EXCLUDED_META_KEYS = [
 ];
 
 function metaStr(metaKeys: string[], err: Record<string, any>) {
-  return logfmt.stringify(
-    metaKeys.reduce((obj: Record<string, any>, key: string) => {
-      obj[key] = err[key];
-      return obj;
-    }, {} as Record<string, any>)
-  );
+  return metaKeys.map((key) => format("%s=%j", key, err[key])).join(" ");
 }
 
 export function errorToString(err: LokeError) {
