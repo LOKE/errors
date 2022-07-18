@@ -1,6 +1,6 @@
 {
   "name": "@loke/errors",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Custom error types for Node.js that include additional metadata for purposes of documentation and metrics",
   "main": "index.js",
   "scripts": {
