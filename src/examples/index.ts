@@ -1,11 +1,6 @@
 import assert from "assert";
 import { register } from "prom-client";
-import {
-  registry,
-  ErrorRegistry,
-  createErrorType,
-  registerMetrics,
-} from "../src";
+import { registry, ErrorRegistry, createErrorType, registerMetrics } from "..";
 
 registry.typePrefix = "https://abc.com/errors/";
 registerMetrics(register);
