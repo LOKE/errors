@@ -1,55 +1,53 @@
-const {
+import assert from "assert";
+import { register } from "prom-client";
+import {
   registry,
   ErrorRegistry,
-  BaseError,
   createErrorType,
-  registerMetrics
-} = require("./index");
+  registerMetrics,
+} from "../src";
+
 registry.typePrefix = "https://abc.com/errors/";
-
-const { register } = require("prom-client");
 registerMetrics(register);
-
-const assert = require("assert");
 
 const altRegistry = new ErrorRegistry({
   name: "alt",
-  typePrefix: "https://xyz.com/errors/"
+  typePrefix: "https://xyz.com/errors/",
 });
 
-class ErrorA extends BaseError {
-  static get code() {
-    return "error_a";
-  }
-  static get help() {
-    return `This is just an example.
+// class ErrorA extends BaseError {
+//   static get code() {
+//     return "error_a";
+//   }
+//   static get help() {
+//     return `This is just an example.
 
-Add multi-line text here.`;
-  }
-}
-registry.register(ErrorA);
+// Add multi-line text here.`;
+//   }
+// }
+// registry.register(ErrorA);
 
 const ErrorB = createErrorType({
   name: "ErrorB",
   code: "error_b",
-  help: "Desc"
+  help: "Desc",
 });
 
 const ErrorC = createErrorType({
   name: "ErrorC",
   code: "error_c",
   help: "Desc",
-  registry: altRegistry
+  registry: altRegistry,
 });
 
 const ErrorD = createErrorType({
   code: "error_d",
   namespace: "mynamespace",
-  help: "Desc"
+  help: "Desc",
 });
 
-new ErrorA();
-new ErrorA();
+// new ErrorA();
+// new ErrorA();
 const errb = new ErrorB("HELLO");
 /*
 THROWING ERROR B
@@ -70,6 +68,8 @@ console.log(errb);
     at startup (internal/bootstrap/node.js:266:19)
     at bootstrapNodeJSCore (internal/bootstrap/node.js:596:3) message: 'HELLO', type: 'https://abc.co
 */
+
+console.log(errd);
 
 assert.strictEqual(errb.toString(), "ErrorB: HELLO");
 assert.strictEqual(

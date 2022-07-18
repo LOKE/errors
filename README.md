@@ -42,7 +42,29 @@ console.log(JSON.stringify(err1));
 // -> {"instance","01CX7CJC5T4S642MH6MJ2WES0B","message":"Extra fields","code":"custom_error","type":"custom_error","x":1,"y":"two"}
 ```
 
-### Types
+### Typescript Type Assistance
+
+`createErrorType` and `createSimpleErrorType` support generics.
+
+```ts
+const MyCustomError = createErrorType<{x: number; y: string;}>({
+  name: "MyCustomError",
+  message: "This is a custom error",
+  code: "custom_error",
+  help: `Put your long description text here.
+This serves as documentation for this error type.
+Include examples on how to use this error type here too.
+
+Presentation of the error is up to you, so you might like to use
+**Markdown** here too if the intent is to display in the browser.
+`
+});
+
+// This will fail to build as x is not a number
+const err1 = new MyCustomError("Extra fields", { x: "1", y: "two" });
+```
+
+### Error Types
 
 The error type is based on the code. The intent is for the type to be a URL to make investigating issues from error tracking systems easier.
 
@@ -256,16 +278,13 @@ const altRegistry = new ErrorRegistry({
   typePrefix: "https://xyz.com/errors/"
 });
 
-class ErrorA extends BaseError {
-  static get code() {
-    return "error_a";
-  }
-  static get help() {
-    return `This is just an example.
+const ErrorA = createErrorType({
+  name: "ErrorA",
+  code: "error_a",
+  help: `This is just an example.
 
-Add multi-line text here.`;
-  }
-}
+Add multi-line text here.`
+});
 registry.register(ErrorA);
 
 const ErrorB = createErrorType({
@@ -299,7 +318,7 @@ const errd = new ErrorD();
 console.log(errb);
 /*
 { ErrorB: HELLO
-    at Object.<anonymous> (/Users/den/Development/loke/meta-errors/example.js:43:14)
+    at Object.<anonymous> (/src/meta-errors/example.js:43:14)
     at Module._compile (internal/modules/cjs/loader.js:689:30)
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:700:10)
     at Module.load (internal/modules/cjs/loader.js:599:32)
