@@ -8,8 +8,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "npx tsc",
-    "prepare": "npm run build",
+    "build": "tsc",
+    "prepare": "rm -rf ./dist && npm run build",
     "pretest": "npm run build",
     "test": "ava -v"
   },
