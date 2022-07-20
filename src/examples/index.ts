@@ -28,7 +28,7 @@ const ErrorB = createErrorType({
   help: "Desc",
 });
 
-const ErrorC = createErrorType({
+const ErrorC = createErrorType<{ x: number }>({
   name: "ErrorC",
   code: "error_c",
   help: "Desc",
