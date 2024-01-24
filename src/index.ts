@@ -6,7 +6,7 @@ import { toType } from "./util";
 import { ErrorRegistry } from "./registry";
 export { ErrorRegistry } from "./registry";
 
-interface CreateErrorTypeArgs {
+export type CreateErrorTypeArgs = {
   /**
    * The error name should describe the error, and ideally be the same as the variable/constructor name.
    * The name is not exposed in serialization, but is shown when converting to a string.
@@ -73,16 +73,16 @@ interface CreateErrorTypeArgs {
    * @example "The value provided was null."
    */
   message?: string;
-}
+};
 
-interface ContructableError<TMeta> {
+export type ConstructableError<TMeta> = {
   new (
     /** Error message to be displayed and exposed if required (leave undefined to use default message) */
     message?: string,
     /** Optional metadata for this error type. Note that metadata is always serialized AND converted to a string. */
     meta?: TMeta
   ): LokeMetaError<TMeta>;
-}
+};
 
 export const registry = new ErrorRegistry({ name: "default" });
 
@@ -101,7 +101,7 @@ export const registry = new ErrorRegistry({ name: "default" });
  */
 export const createErrorType = <TMeta extends object | void = void>(
   args: CreateErrorTypeArgs
-): ContructableError<TMeta> => {
+): ConstructableError<TMeta> => {
   const {
     name: _name,
     code,
@@ -136,7 +136,7 @@ export const createErrorType = <TMeta extends object | void = void>(
       super(message || defaultMessage, constants);
       if (meta) Object.assign(this, meta);
     }
-  } as unknown as ContructableError<TMeta>;
+  } as unknown as ConstructableError<TMeta>;
 
   registry.register(constants);
 
@@ -148,7 +148,7 @@ export const createErrorType = <TMeta extends object | void = void>(
  */
 export const createSimpleErrorType = <TMeta>(
   args: CreateErrorTypeArgs
-): ContructableError<TMeta> => {
+): ConstructableError<TMeta> => {
   const {
     name: _name,
     code,
@@ -183,7 +183,7 @@ export const createSimpleErrorType = <TMeta>(
       super(message || defaultMessage, constants);
       if (meta) Object.assign(this, meta);
     }
-  } as ContructableError<TMeta>;
+  } as ConstructableError<TMeta>;
 
   registry.register(constants);
 
