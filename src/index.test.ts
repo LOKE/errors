@@ -111,19 +111,23 @@ test("meta", (t) => {
 test("stack trace", (t) => {
   const err: LokeError = t.throws(() => stack1()) as any;
 
-  t.deepEqual(err.stack.split("\n"), [
-    "ErrorA: This is error A",
-    "    at stackFinal (/Users/den/Development/LOKE/errors/src/index.test.ts:47:9)",
-    "    at stack2 (/Users/den/Development/LOKE/errors/src/index.test.ts:43:3)",
-    "    at stack1 (/Users/den/Development/LOKE/errors/src/index.test.ts:39:3)",
-    "    at <anonymous> (/Users/den/Development/LOKE/errors/src/index.test.ts:112:41)",
-    "    at ExecutionContext.throws (file:///Users/den/Development/LOKE/errors/node_modules/ava/lib/assert.js:423:14)",
-    "    at <anonymous> (/Users/den/Development/LOKE/errors/src/index.test.ts:112:28)",
-    "    at Test.callFn (file:///Users/den/Development/LOKE/errors/node_modules/ava/lib/test.js:525:26)",
-    "    at Test.run (file:///Users/den/Development/LOKE/errors/node_modules/ava/lib/test.js:534:33)",
-    "    at Runner.runSingle (file:///Users/den/Development/LOKE/errors/node_modules/ava/lib/runner.js:281:33)",
-    "    at Runner.runTest (file:///Users/den/Development/LOKE/errors/node_modules/ava/lib/runner.js:363:30)",
-  ]);
+  t.deepEqual(
+    // remove file paths for consistency across environments
+    err.stack.split("\n").map((line) => line.split("(")[0]),
+    [
+      "ErrorA: This is error A",
+      "    at stackFinal ",
+      "    at stack2 ",
+      "    at stack1 ",
+      "    at <anonymous> ",
+      "    at ExecutionContext.throws ",
+      "    at <anonymous> ",
+      "    at Test.callFn ",
+      "    at Test.run ",
+      "    at Runner.runSingle ",
+      "    at Runner.runTest ",
+    ]
+  );
 });
 test("stack trace free", (t) => {
   const err = new StackFreeError("My message.");
