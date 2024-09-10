@@ -7,6 +7,6 @@ export const counter = new Counter({
   registers: [],
 });
 
-export const registerMetrics = (register: Registry) => {
+export const registerMetrics = (register: Pick<Registry, "registerMetric">) => {
   register.registerMetric(counter);
 };
